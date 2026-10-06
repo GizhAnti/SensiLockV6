@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SensiLock // Dark Deep Neon HUD v6.2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        * {
+            touch-action: pan-y; /* Chỉ cho phép cuộn dọc, chặn mọi hành động zoom */
+        }
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: #010409;
+            color: #00f0ff;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(0, 119, 255, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(0, 240, 255, 0.08) 0%, transparent 45%);
+            margin: 0;
+            padding: 0;
+        }
+        .font-cyber {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .hud-card {
+            background: rgba(4, 11, 24, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 149, 255, 0.35);
+            box-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.8), inset 0 0 25px rgba(0, 119, 255, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hud-card:hover {
+            border-color: rgba(0, 240, 255, 0.7);
+            box-shadow: 0 15px 45px -10px rgba(0, 149, 255, 0.25), inset 0 0 30px rgba(0, 240, 255, 0.12);
+        }
+        .cyber-btn {
+            background: linear-gradient(135deg, rgba(0, 119, 255, 0.15), rgba(0, 240, 255, 0.3));
+            border: 1px solid #00bfff;
+            color: #00f0ff;
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+            transition: all 0.3s ease;
+        }
+        .cyber-btn:hover {
+            background: #00bfff;
+            color: #010409;
+            box-shadow: 0 0 25px rgba(0, 191, 255, 0.6);
+            transform: translateY(-2px);
+        }
+        .cyber-btn-accent {
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.15), rgba(0, 240, 255, 0.3));
+            border: 1px solid #00ffcc;
+            color: #00ffcc;
+            text-shadow: 0 0 8px rgba(0, 255, 204, 0.6);
+            transition: all 0.3s ease;
+        }
+        .cyber-btn-accent:hover {
+            background: #00ffcc;
+            color: #010409;
+            box-shadow: 0 0 25px rgba(0, 255, 204, 0.6);
+            transform: translateY(-2px);
+        }
+        .glow-text {
+            text-shadow: 0 0 12px rgba(0, 240, 255, 0.6), 0 0 25px rgba(0, 119, 255, 0.3);
+            color: #ffffff;
+        }
+        .value-highlight {
+            background: linear-gradient(135deg, #00f0ff, #00ffcc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- MAIN CONTROL PANEL -->
+    <div class="w-full max-w-2xl p-6 md:p-8 hud-card rounded-2xl relative">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6 border-b border-blue-900/50 pb-4">
+            <div>
+                <h2 class="text-2xl font-cyber font-black glow-text tracking-wider">SENSILOCK HUD</h2>
+                <p class="text-xs text-blue-400/70 font-mono mt-1">DEEP NEON PERFORMANCE ENGINE</p>
+            </div>
+            <span class="text-xs font-cyber px-3.5 py-1.5 text-cyan-300 bg-blue-950/80 border border-blue-500/50 rounded-full shadow-[0_0_15px_rgba(0,240,255,0.2)]">● ACTIVE</span>
+        </div>
+
+        <!-- Device Selection & Preset Area (Blank Initially) -->
+        <div class="mb-6 space-y-3">
+            <label class="block text-xs uppercase tracking-wider text-cyan-400 font-cyber">Target Device Profile</label>
+            <div class="flex gap-2">
+                <input type="text" id="device-name" placeholder="Nhập tên thiết bị của bạn..." class="flex-1 bg-[#020817] border border-blue-900/80 p-3 text-cyan-200 placeholder-cyan-900/60 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 font-cyber text-sm rounded-xl shadow-inner">
+                <button onclick="generateConfig()" class="px-6 py-3 font-cyber text-xs uppercase cyber-btn rounded-xl font-bold">APPLY</button>
+            </div>
+            <div class="flex flex-wrap gap-2 pt-2">
+                <button onclick="setDevicePreset('ROG Phone 8 Pro')" class="text-xs px-3.5 py-1.5 border border-blue-900/60 bg-blue-950/40 text-cyan-300 hover:border-cyan-400 hover:bg-blue-900/50 rounded-lg transition shadow-sm">ROG Phone 8</button>
+                <button onclick="setDevicePreset('iPhone 15 Pro Max')" class="text-xs px-3.5 py-1.5 border border-blue-900/60 bg-blue-950/40 text-cyan-300 hover:border-cyan-400 hover:bg-blue-900/50 rounded-lg transition shadow-sm">iPhone 15 Pro Max</button>
+                <button onclick="setDevicePreset('Samsung S24 Ultra')" class="text-xs px-3.5 py-1.5 border border-blue-900/60 bg-blue-950/40 text-cyan-300 hover:border-cyan-400 hover:bg-blue-900/50 rounded-lg transition shadow-sm">Samsung S24 Ultra</button>
+                <button onclick="setDevicePreset('iPad Pro M4')" class="text-xs px-3.5 py-1.5 border border-blue-900/60 bg-blue-950/40 text-cyan-300 hover:border-cyan-400 hover:bg-blue-900/50 rounded-lg transition shadow-sm">iPad Pro</button>
+            </div>
+        </div>
+
+        <!-- Minimalist Sensitivity Cards (Values Only) -->
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+            <div class="hud-card p-4 text-center rounded-xl group hover:scale-[1.02] transition-transform bg-[#020712]/90">
+                <div class="text-xs text-blue-400/80 mb-2 uppercase tracking-wider font-cyber">General</div>
+                <div id="val-general" class="text-4xl font-cyber font-black value-highlight">--</div>
+            </div>
+            <div class="hud-card p-4 text-center rounded-xl group hover:scale-[1.02] transition-transform bg-[#020712]/90">
+                <div class="text-xs text-blue-400/80 mb-2 uppercase tracking-wider font-cyber">Red Dot</div>
+                <div id="val-reddot" class="text-4xl font-cyber font-black value-highlight">--</div>
+            </div>
+            <div class="hud-card p-4 text-center rounded-xl group hover:scale-[1.02] transition-transform bg-[#020712]/90">
+                <div class="text-xs text-blue-400/80 mb-2 uppercase tracking-wider font-cyber">Scope 2x</div>
+                <div id="val-scope2x" class="text-4xl font-cyber font-black value-highlight">--</div>
+            </div>
+            <div class="hud-card p-4 text-center rounded-xl group hover:scale-[1.02] transition-transform bg-[#020712]/90">
+                <div class="text-xs text-blue-400/80 mb-2 uppercase tracking-wider font-cyber">Scope 4x</div>
+                <div id="val-scope4x" class="text-4xl font-cyber font-black value-highlight">--</div>
+            </div>
+            <div class="hud-card p-4 text-center rounded-xl group hover:scale-[1.02] transition-transform bg-[#020712]/90">
+                <div class="text-xs text-blue-400/80 mb-2 uppercase tracking-wider font-cyber">AWM Scope</div>
+                <div id="val-awm" class="text-4xl font-cyber font-black value-highlight">--</div>
+            </div>
+            <div class="hud-card p-4 text-center rounded-xl group hover:scale-[1.02] transition-transform bg-[#020712]/90">
+                <div class="text-xs text-blue-400/80 mb-2 uppercase tracking-wider font-cyber">Camera Button</div>
+                <div id="val-camera" class="text-4xl font-cyber font-black value-highlight">--</div>
+            </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="mb-2">
+           
+
+        <!-- Footer Actions -->
+        <div class="flex justify-between items-center mt-6 pt-4 border-t border-blue-900/50 text-xs">
+            <span class="text-blue-400/60 font-mono">SENSILOCK v6.2 DEEP NEON</span>
+            <button onclick="copyConfig()" class="px-5 py-2.5 cyber-btn-accent font-cyber uppercase rounded-xl text-xs font-bold shadow-lg">COPY CONFIG</button>
+        </div>
+    </div>
+
+    <script>
+        // Strict 150-195 hidden range generation logic
+        function getRandomSensi() {
+            return Math.floor(Math.random() * (195 - 150 + 1)) + 150;
+        }
+
+        function generateConfig() {
+            const deviceInput = document.getElementById('device-name').value.trim();
+            const device = deviceInput === "" ? "Custom Device" : deviceInput;
+            
+            const general = getRandomSensi();
+            const reddot = getRandomSensi();
+            const scope2x = getRandomSensi();
+            const scope4x = getRandomSensi();
+            const awm = getRandomSensi();
+            const camera = getRandomSensi();
+
+            document.getElementById('val-general').textContent = general;
+            document.getElementById('val-reddot').textContent = reddot;
+            document.getElementById('val-scope2x').textContent = scope2x;
+            document.getElementById('val-scope4x').textContent = scope4x;
+            document.getElementById('val-awm').textContent = awm;
+            document.getElementById('val-camera').textContent = camera;
+        }
+
+        function setDevicePreset(name) {
+            document.getElementById('device-name').value = name;
+            generateConfig();
+        }
+
+        function copyConfig() {
+            const deviceInput = document.getElementById('device-name').value.trim();
+            const device = deviceInput === "" ? "Custom Device" : deviceInput;
+            
+            const text = `--- SENSILOCK CONFIG (${device}) ---\n` +
+                         `General: ${document.getElementById('val-general').textContent}\n` +
+                         `Red Dot: ${document.getElementById('val-reddot').textContent}\n` +
+                         `Scope 2x: ${document.getElementById('val-scope2x').textContent}\n` +
+                         `Scope 4x: ${document.getElementById('val-scope4x').textContent}\n` +
+                         `AWM Scope: ${document.getElementById('val-awm').textContent}\n` +
+                         `Camera Button: ${document.getElementById('val-camera').textContent}\n` +
+                         `----------------------------`;
+            navigator.clipboard.writeText(text);
+            alert("Đã sao chép toàn bộ cấu hình độ nhạy!");
+        }
+
+        // Auto generate config on page load
+        window.onload = function() {
+            generateConfig();
+        };
+    </script>
+</body>
+</html>
